@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cloudfinalproject.Doctor.Signup_Doctor;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.example.cloudfinalproject.module.PationtsModule;
@@ -60,6 +61,13 @@ public class Login_patient extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(Login_patient.this,ChoosePatientTopics.class));
+
+            }
+        });
+        dont_have_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Login_patient.this, Signup_patient.class));
 
             }
         });

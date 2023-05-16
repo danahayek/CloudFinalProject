@@ -1,4 +1,4 @@
-package com.example.cloudfinalproject;
+package com.example.cloudfinalproject.Doctor;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cloudfinalproject.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -59,7 +60,15 @@ public class Login_doctor extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(Login_doctor.this,HomeDoctor.class));
+                startActivity(new Intent(Login_doctor.this, HomeDoctor.class));
+
+            }
+        });
+
+        dont_have_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Login_doctor.this, Signup_Doctor.class));
 
             }
         });

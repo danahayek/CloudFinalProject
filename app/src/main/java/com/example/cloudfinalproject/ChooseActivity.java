@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.cloudfinalproject.Doctor.Signup_Doctor;
+
 public class ChooseActivity extends AppCompatActivity {
 
     CardView patientCard;
@@ -23,7 +25,7 @@ public class ChooseActivity extends AppCompatActivity {
         doctorCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ChooseActivity.this,Doctor_addTopics.class));
+                startActivity(new Intent(ChooseActivity.this, Signup_Doctor.class));
 
             }
         });

@@ -7,17 +7,22 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cloudfinalproject.Doctor.Signup_Doctor;
 import com.example.cloudfinalproject.module.PationtsModule;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.checkerframework.common.returnsreceiver.qual.This;
 
@@ -36,6 +41,9 @@ public class Signup_patient extends AppCompatActivity {
     EditText pass;
     EditText confirmpass;
 
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,10 +61,18 @@ public class Signup_patient extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         progressDialog = new ProgressDialog(this);
+        haveAccount=findViewById(R.id.haveAccount);
 
 
         Sign_btn.setOnClickListener(view ->{
             createUser();
+        });
+        haveAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Signup_patient.this, Login_patient.class));
+
+            }
         });
 
 
@@ -95,22 +111,40 @@ public class Signup_patient extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
 
-                        Toast.makeText(Signup_patient.this, "User registered successfully", Toast.LENGTH_SHORT).show();
-
+                        startActivity(new Intent(Signup_patient.this, HomePatient.class));
+//                        doctorModule pationtsModule = new doctorModule(name, address, birthdate, email, phone, password, confrimpassword);
+//                        databaseReference.child(name).setValue(pationtsModule);
+                        String deviceToken= FirebaseInstanceId.getInstance().getToken();
+                        String currentUserID=firebaseAuth.getCurrentUser().getUid();
+                        databaseReference.child("Patients").child(currentUserID).setValue("");
+                        databaseReference.child("Patients").child(currentUserID).child("device_token").setValue(deviceToken);
                         firebaseFirestore.collection("Patients").document(FirebaseAuth.getInstance().getUid()).set(
                                 new PationtsModule(name,address,birthdate,email,phone,password,confrimpassword)
                         );
 
-                        Intent intent = new Intent(Signup_patient.this,Login_patient.class);
-                        intent.putExtra("name",email);
-                        intent.putExtra("password",password);
-                        startActivity(intent);
-
-
+                        progressDialog.cancel();
                     }else{
                         Toast.makeText(Signup_patient.this, "Registration Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        progressDialog.cancel();
                     }
-                }
+                    }
+//
+//                        Toast.makeText(Signup_patient.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+//
+//                        firebaseFirestore.collection("Patients").document(FirebaseAuth.getInstance().getUid()).set(
+//                                new PationtsModule(name,address,birthdate,email,phone,password,confrimpassword)
+//                        );
+//
+//                        Intent intent = new Intent(Signup_patient.this,ChoosePatientTopics.class);
+//                        intent.putExtra("name",email);
+//                        intent.putExtra("password",password);
+//                        startActivity(intent);
+//
+//
+//                    }else{
+//                        Toast.makeText(Signup_patient.this, "Registration Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+
             });
         }
 

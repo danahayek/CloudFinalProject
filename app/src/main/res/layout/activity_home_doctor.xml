@@ -4,25 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeDoctor">
+    tools:context=".Doctor.HomeDoctor">
 
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="224dp"
-        android:layout_height="79dp"
-        android:layout_marginStart="93dp"
-        android:layout_marginTop="87dp"
-        android:layout_marginEnd="94dp"
-        android:text="مرحبا بك ياايها الطبيب"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_doc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/add_topics_DOC"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="220dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
