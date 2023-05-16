@@ -80,7 +80,10 @@ public class Signup_Doctor extends AppCompatActivity {
 
             }
         });
+        if (firebaseAuth.getCurrentUser()!= null){
+            startActivity(new Intent(Signup_Doctor.this, HomeDoctor.class));
 
+        }
 
     }
 

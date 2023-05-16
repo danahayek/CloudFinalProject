@@ -19,6 +19,7 @@ import com.example.cloudfinalproject.Adapter.Doctor_Adapter;
 import com.example.cloudfinalproject.ChooseActivity;
 import com.example.cloudfinalproject.R;
 import com.example.cloudfinalproject.module.Topics;
+import com.example.cloudfinalproject.module.showDoctor;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -34,7 +35,7 @@ public class HomeDoctor extends AppCompatActivity {
     RecyclerView recyclerDoc;
     Doctor_Adapter adapterDoc;
     LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    ArrayList<Topics> topic_items;
+    ArrayList<showDoctor> topic_items;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +43,7 @@ public class HomeDoctor extends AppCompatActivity {
 
 
         recyclerDoc = findViewById(R.id.recycler_doc);
-        topic_items = new ArrayList<Topics>();
+        topic_items = new ArrayList<showDoctor>();
         adapterDoc = new Doctor_Adapter(this,topic_items,null);
         recyclerDoc.setAdapter(adapterDoc);
 
@@ -62,13 +63,13 @@ public class HomeDoctor extends AppCompatActivity {
                             for (DocumentSnapshot documentSnapshot : documentSnapshots) {
                                 if (documentSnapshot.exists()) {
                                     String id = documentSnapshot.getId();
-                                    String title = documentSnapshot.getString("topic_title");
+                                    String title = documentSnapshot.getString("topic_name");
                                     String content = documentSnapshot.getString("topic_content");
                                     String image = documentSnapshot.getString("image");
 
 
 
-                                    Topics c = new Topics(title,content,image);
+                                    showDoctor c = new showDoctor(title);
                                     topic_items.add(c);
 
                                     recyclerDoc.setLayoutManager(layoutManager);

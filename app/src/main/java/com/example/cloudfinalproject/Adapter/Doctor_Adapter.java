@@ -12,20 +12,20 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.cloudfinalproject.Doctor.Doctor_addTopics;
 import com.example.cloudfinalproject.R;
-import com.example.cloudfinalproject.module.Topics;
+import com.example.cloudfinalproject.module.showDoctor;
 
 import java.util.ArrayList;
 
 public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHolder> {
 
     Context context;
-    ArrayList<Topics> topicArrayList;
+    ArrayList<showDoctor> topicArrayList;
     //private Doctor_addTopics.ItemClickListener mClickListener2;
 
-    public Doctor_Adapter(Context context, ArrayList<Topics> topicArrayList, ItemClickListener mClickListener2) {
+    public Doctor_Adapter(Context context, ArrayList<showDoctor> topicArrayList, ItemClickListener mClickListener2) {
         this.context = context;
+
         this.topicArrayList = topicArrayList;
        // this.mClickListener2 = mClickListener2;
 
@@ -42,8 +42,14 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        Topics n =topicArrayList.get(position);
-        holder.show_name.setText(n.getTopic_name());
+        showDoctor n =topicArrayList.get(position);
+        holder.show_name.setText(n.getTitle());
+        holder.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
       //  holder.show_img.setImageURI(uri);
 
         holder.show_card.setOnClickListener(new View.OnClickListener() {
@@ -66,15 +72,17 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView show_name;
-        ImageView show_img;
+        ImageView edit;
+        ImageView delete;
 
         CardView show_card;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.show_name = itemView.findViewById(R.id.show_title);
-        //    this.show_img = itemView.findViewById(R.id.show_imageView);
-
+            this.edit=itemView.findViewById(R.id.edit_topic);
+            this.delete=itemView.findViewById(R.id.delete_topic);
             this.show_card=itemView.findViewById(R.id.show_card);
 
             itemView.setOnClickListener(this);
@@ -91,7 +99,7 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
 //    void  setmClickListener2(ItemClickListener mClickListener2){
 //        this.mClickListener2=mClickListener2;
 //    }
-    Topics getItem(int id) {
+    showDoctor getItem(int id) {
         return topicArrayList.get(id);
     }
 
