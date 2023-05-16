@@ -63,10 +63,12 @@ public class HomeDoctor extends AppCompatActivity {
                                 if (documentSnapshot.exists()) {
                                     String id = documentSnapshot.getId();
                                     String title = documentSnapshot.getString("topic_title");
+                                    String content = documentSnapshot.getString("topic_content");
+                                    String image = documentSnapshot.getString("image");
 
 
 
-                                    Topics c = new Topics(id,title);
+                                    Topics c = new Topics(title,content,image);
                                     topic_items.add(c);
 
                                     recyclerDoc.setLayoutManager(layoutManager);

@@ -4,46 +4,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
-import android.webkit.MimeTypeMap;
-import android.webkit.PermissionRequest;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MediaController;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
 
-import android.Manifest;
-
-import com.example.cloudfinalproject.ChooseActivity;
 import com.example.cloudfinalproject.R;
-import com.example.cloudfinalproject.image.upload;
 import com.example.cloudfinalproject.module.Topics;
+import com.example.cloudfinalproject.module.Topicsdoc;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -298,7 +279,6 @@ public class Doctor_addTopics extends AppCompatActivity {
         add_btn=findViewById(R.id.add_btn);
         cotent=findViewById(R.id.topic_details);
         address=findViewById(R.id.topic_address);
-        imageUri=
         firebaseFirestore=FirebaseFirestore.getInstance();
 
 
@@ -361,6 +341,18 @@ public class Doctor_addTopics extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
+                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        String title=address.getText().toString();
+
+                        Map<String, Object> user = new HashMap<>();
+                        user.put("title", title.toString());
+                        firebaseFirestore.collection("topicDOC").document().set(
+                                new Topicsdoc(title,uri.toString())
+                        );
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -370,26 +362,25 @@ public class Doctor_addTopics extends AppCompatActivity {
         });
 
     }
-    public void uploadimage(){
-        storageReference= FirebaseStorage.getInstance().getReference("images/");
+    public void uploadimage() {
+        storageReference = FirebaseStorage.getInstance().getReference("images/");
         storageReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 imageView.setImageURI(null);
-                videoView.setVideoURI(null);
 
                 storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onSuccess(Uri uri ) {
-//                        String title=address.getText().toString();
-//                        String content=cotent.getText().toString();
-//
-//                        Map<String, Object> user = new HashMap<>();
-//                        user.put("title", title.toString());
-//                        user.put("content", content.toString());
-//                        firebaseFirestore.collection("Topics").document().set(
-//                                new Topics(title,content,uri.toString())
-//                        );
+                    public void onSuccess(Uri uri) {
+                        String title=address.getText().toString();
+                        String content=cotent.getText().toString();
+
+                        Map<String, Object> user = new HashMap<>();
+                        user.put("title", title.toString());
+                        user.put("content", content.toString());
+                        firebaseFirestore.collection("Topics").document().set(
+                                new Topics(title,content,uri.toString())
+                        );
                     }
                 });
 
@@ -405,31 +396,6 @@ public class Doctor_addTopics extends AppCompatActivity {
             }
         });
     }
-    public void add_topic_doc(){
-
-        storageReference2= FirebaseStorage.getInstance().getReference("videos/");
-
-        storageReference= FirebaseStorage.getInstance().getReference("images/");
-        storageReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                imageView.setImageURI(null);
-                videoView.setVideoURI(null);
-
-                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri ) {
-                        String title=address.getText().toString();
-                        String content=cotent.getText().toString();
-
-                        Map<String, Object> user = new HashMap<>();
-                        user.put("title", title.toString());
-                        user.put("content", content.toString());
-                        firebaseFirestore.collection("Topics").document().set(
-                                new Topics(title,content,uri.toString())
-                        );
-                    }
-                });
 //        String title=address.getText().toString();
 //                        String content=cotent.getText().toString();
 //
@@ -444,4 +410,3 @@ public class Doctor_addTopics extends AppCompatActivity {
 
 
 
-}
