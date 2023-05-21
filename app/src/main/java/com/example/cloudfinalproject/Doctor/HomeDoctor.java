@@ -1,10 +1,12 @@
 package com.example.cloudfinalproject.Doctor;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -28,14 +31,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class HomeDoctor extends AppCompatActivity {
+public class HomeDoctor extends AppCompatActivity  implements Doctor_Adapter.ItemClickListener {
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     RecyclerView recyclerDoc;
     Doctor_Adapter adapterDoc;
     LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     ArrayList<showDoctor> topic_items;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +48,13 @@ public class HomeDoctor extends AppCompatActivity {
 
         recyclerDoc = findViewById(R.id.recycler_doc);
         topic_items = new ArrayList<showDoctor>();
-        adapterDoc = new Doctor_Adapter(this,topic_items,null);
+        adapterDoc = new Doctor_Adapter(this, topic_items, this);
         recyclerDoc.setAdapter(adapterDoc);
 
-       // String nn = getIntent().getStringExtra("name");
+        // String nn = getIntent().getStringExtra("name");
         GetNote();
     }
+
     private void GetNote() {
 
         db.collection("Topics").get()
@@ -66,7 +71,6 @@ public class HomeDoctor extends AppCompatActivity {
                                     String title = documentSnapshot.getString("topic_name");
                                     String content = documentSnapshot.getString("topic_content");
                                     String image = documentSnapshot.getString("image");
-
 
 
                                     showDoctor c = new showDoctor(title);
@@ -95,6 +99,45 @@ public class HomeDoctor extends AppCompatActivity {
                 });
     }
 
+    public void Delete(final Topics showdoctor) {
+
+        db.collection("Topics").document(showdoctor.getTopic_name())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        topic_items.remove(showdoctor);
+                        Toast.makeText(HomeDoctor.this, " Removed Successfully", Toast.LENGTH_SHORT).show();
+
+                        adapterDoc.notifyDataSetChanged();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("logData", "get failed with delete");
+                    }
+                });
+    }
+//        AlertDialog.Builder alertDialogBuilderLabelDelete = new AlertDialog.Builder(this);
+//        alertDialogBuilderLabelDelete.create();
+//        alertDialogBuilderLabelDelete.setIcon(R.drawable.delete);
+//        alertDialogBuilderLabelDelete.setCancelable(false);
+//        alertDialogBuilderLabelDelete.setTitle("Delete label");
+//        alertDialogBuilderLabelDelete.setMessage("Are you sure to delete?");
+//        alertDialogBuilderLabelDelete.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialogBox, int id) {
+//
+//
+//            }
+//        });
+//        alertDialogBuilderLabelDelete.setNegativeButton("No",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialogBox, int id) {
+//                        dialogBox.cancel();
+//                    }
+//                });        alertDialogBuilderLabelDelete.show();
+//    }
+//
 
     //option menu
     @Override
@@ -122,5 +165,10 @@ public class HomeDoctor extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onItemClick(int position, String id) {
+        Delete(topic_items.get(position));
     }
 }

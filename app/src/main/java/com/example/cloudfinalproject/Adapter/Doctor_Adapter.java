@@ -2,6 +2,7 @@ package com.example.cloudfinalproject.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cloudfinalproject.ChooseActivity;
+import com.example.cloudfinalproject.Doctor.Doctor_Update;
+import com.example.cloudfinalproject.Doctor.Doctor_addTopics;
+import com.example.cloudfinalproject.Doctor.Signup_Doctor;
 import com.example.cloudfinalproject.R;
 import com.example.cloudfinalproject.module.showDoctor;
 
@@ -21,13 +26,14 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
 
     Context context;
     ArrayList<showDoctor> topicArrayList;
-    //private Doctor_addTopics.ItemClickListener mClickListener2;
 
-    public Doctor_Adapter(Context context, ArrayList<showDoctor> topicArrayList, ItemClickListener mClickListener2) {
+    private ItemClickListener mClickListener;
+
+    public Doctor_Adapter(Context context, ArrayList<showDoctor> topicArrayList, ItemClickListener onClick ) {
         this.context = context;
 
         this.topicArrayList = topicArrayList;
-       // this.mClickListener2 = mClickListener2;
+        this.mClickListener = onClick;
 
 
     }
@@ -44,18 +50,23 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         showDoctor n =topicArrayList.get(position);
         holder.show_name.setText(n.getTitle());
-        holder.edit.setOnClickListener(new View.OnClickListener() {
+        holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+              mClickListener.onItemClick(holder.getAdapterPosition(),topicArrayList.get(position).getId());
             }
         });
       //  holder.show_img.setImageURI(uri);
 
-        holder.show_card.setOnClickListener(new View.OnClickListener() {
+        holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //mClickListener2.onItemClick(holder.getAdapterPosition(),topicArrayList.get(position).getId());
+
+                Intent intent = new Intent(context, Doctor_Update.class);
+                context.startActivity(intent);
+
+
+                //   EditClickListener.onItemClick(holder.getAdapterPosition(),topicArrayList.get(position).getId());
 
 
             }
@@ -95,12 +106,18 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
     }
     public interface ItemClickListener {
         void onItemClick(int position, String id);
+
     }
-//    void  setmClickListener2(ItemClickListener mClickListener2){
-//        this.mClickListener2=mClickListener2;
-//    }
+
+    void setClickListener(ItemClickListener itemClickListener) {
+        this.mClickListener = itemClickListener;
+    }
+
+
     showDoctor getItem(int id) {
+
         return topicArrayList.get(id);
     }
+
 
 }
