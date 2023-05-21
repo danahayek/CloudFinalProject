@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.cloudfinalproject.Adapter.Doctor_Adapter;
 import com.example.cloudfinalproject.ChooseActivity;
 import com.example.cloudfinalproject.R;
+import com.example.cloudfinalproject.module.DoctorTopicModule;
 import com.example.cloudfinalproject.module.Topics;
 import com.example.cloudfinalproject.module.showDoctor;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,14 +32,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class HomeDoctor extends AppCompatActivity  implements Doctor_Adapter.ItemClickListener {
+public class HomeDoctor extends AppCompatActivity   {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     RecyclerView recyclerDoc;
     Doctor_Adapter adapterDoc;
     LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    ArrayList<showDoctor> topic_items;
+    ArrayList<DoctorTopicModule> topic_items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +48,8 @@ public class HomeDoctor extends AppCompatActivity  implements Doctor_Adapter.Ite
 
 
         recyclerDoc = findViewById(R.id.recycler_doc);
-        topic_items = new ArrayList<showDoctor>();
-        adapterDoc = new Doctor_Adapter(this, topic_items, this);
+        topic_items = new ArrayList<DoctorTopicModule>();
+        adapterDoc = new Doctor_Adapter(this,topic_items);
         recyclerDoc.setAdapter(adapterDoc);
 
         // String nn = getIntent().getStringExtra("name");
@@ -57,7 +58,7 @@ public class HomeDoctor extends AppCompatActivity  implements Doctor_Adapter.Ite
 
     private void GetNote() {
 
-        db.collection("Topics").get()
+        db.collection("DoctorTopic").get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot documentSnapshots) {
@@ -68,12 +69,14 @@ public class HomeDoctor extends AppCompatActivity  implements Doctor_Adapter.Ite
                             for (DocumentSnapshot documentSnapshot : documentSnapshots) {
                                 if (documentSnapshot.exists()) {
                                     String id = documentSnapshot.getId();
-                                    String title = documentSnapshot.getString("topic_name");
-                                    String content = documentSnapshot.getString("topic_content");
+                                    String title = documentSnapshot.getString("topic_address");
+                                    String content = documentSnapshot.getString("topic_details");
                                     String image = documentSnapshot.getString("image");
+                                    String video = documentSnapshot.getString("video");
 
 
-                                    showDoctor c = new showDoctor(title);
+
+                                    DoctorTopicModule c = new DoctorTopicModule(title);
                                     topic_items.add(c);
 
                                     recyclerDoc.setLayoutManager(layoutManager);
@@ -98,26 +101,25 @@ public class HomeDoctor extends AppCompatActivity  implements Doctor_Adapter.Ite
                     }
                 });
     }
-
-    public void Delete(final Topics showdoctor) {
-
-        db.collection("Topics").document(showdoctor.getTopic_name())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        topic_items.remove(showdoctor);
-                        Toast.makeText(HomeDoctor.this, " Removed Successfully", Toast.LENGTH_SHORT).show();
-
-                        adapterDoc.notifyDataSetChanged();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("logData", "get failed with delete");
-                    }
-                });
-    }
+//    public void Delete(final Topics showdoctor) {
+//
+//        db.collection("Topics").document(showdoctor.getTopic_name())
+//                .delete()
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void unused) {
+//                        topic_items.remove(showdoctor);
+//                        Toast.makeText(HomeDoctor.this, " Removed Successfully", Toast.LENGTH_SHORT).show();
+//
+//                        adapterDoc.notifyDataSetChanged();
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.e("logData", "get failed with delete");
+//                    }
+//                });
+//    }
 //        AlertDialog.Builder alertDialogBuilderLabelDelete = new AlertDialog.Builder(this);
 //        alertDialogBuilderLabelDelete.create();
 //        alertDialogBuilderLabelDelete.setIcon(R.drawable.delete);
@@ -167,8 +169,8 @@ public class HomeDoctor extends AppCompatActivity  implements Doctor_Adapter.Ite
         }
     }
 
-    @Override
-    public void onItemClick(int position, String id) {
-        Delete(topic_items.get(position));
-    }
+//    @Override
+//    public void onItemClick(int position, String id) {
+//        Delete(topic_items.get(position));
+//    }
 }

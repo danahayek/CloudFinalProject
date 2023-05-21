@@ -1,12 +1,16 @@
 package com.example.cloudfinalproject.Doctor;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +21,7 @@ import android.widget.VideoView;
 
 
 import com.example.cloudfinalproject.R;
+import com.example.cloudfinalproject.module.DoctorTopicModule;
 import com.example.cloudfinalproject.module.Topics;
 import com.example.cloudfinalproject.module.Topicsdoc;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -26,6 +31,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,6 +63,8 @@ public class Doctor_addTopics extends AppCompatActivity {
     VideoView videoView;
     Button Choosevideo;
     Uri videouri;
+
+
     MediaController mediaController;
     Button chooseimage;
     EditText address;
@@ -270,6 +278,8 @@ public class Doctor_addTopics extends AppCompatActivity {
 //    }
 //}
 
+
+
         imageView=findViewById(R.id.image_add);
         chooseimage=findViewById(R.id.choose_image);
         videoView=findViewById(R.id.videoView);
@@ -300,7 +310,7 @@ public class Doctor_addTopics extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 uploadimage();
-                uploadVideo();
+
 
             }
         });
@@ -324,10 +334,24 @@ public class Doctor_addTopics extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && data != null && data.getData()!= null){
-            imageUri=data.getData();
+            imageUri = data.getData();
+           // Log.w("uri image",uri);
             imageView.setImageURI(imageUri);
 
-        }else if (requestCode == 101 && data != null && data.getData()!= null){
+        }
+
+//        if (requestCode == 1001 && requestCode == RESULT_OK) {
+//            filepath = data.getData();
+//            try {
+//                InputStream inputStream = getContentResolver().openInputStream(filepath);
+//                bitmap = BitmapFactory.decodeStream(inputStream);
+//                imageView.setImageBitmap(bitmap);
+//            } catch (Exception ex) {
+//                // You can catch the exception here
+//            }
+//        }
+
+        else if (requestCode == 101 && data != null && data.getData()!= null){
             videouri=data.getData();
             videoView.setVideoURI(videouri);
         }
@@ -340,16 +364,27 @@ public class Doctor_addTopics extends AppCompatActivity {
         storageReference.putFile(videouri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                imageView.setImageURI(null);
+                videoView.setVideoURI(null);
 
                 storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+
                     @Override
                     public void onSuccess(Uri uri) {
                         String title=address.getText().toString();
+                        String content=cotent.getText().toString();
+                        String image=imageUri.toString();
+                        String video=videouri.toString();
+
 
                         Map<String, Object> user = new HashMap<>();
-                        user.put("title", title.toString());
-                        firebaseFirestore.collection("topicDOC").document().set(
-                                new Topicsdoc(title,uri.toString())
+                        user.put("address", title.toString());
+                        user.put("detail", content.toString());
+                        user.put("image",image.toString());
+                        user.put("video",video.toString());
+
+                        firebaseFirestore.collection("DoctorTopic").document().set(
+                                new DoctorTopicModule(image,video,title,content)
                         );
                     }
                 });
@@ -367,24 +402,10 @@ public class Doctor_addTopics extends AppCompatActivity {
         storageReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                imageView.setImageURI(null);
+                Toast.makeText(Doctor_addTopics.this, "تمت الاضافة بنجاح", Toast.LENGTH_SHORT).show();
 
-                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        String title=address.getText().toString();
-                        String content=cotent.getText().toString();
+                uploadVideo();
 
-                        Map<String, Object> user = new HashMap<>();
-                        user.put("title", title.toString());
-                        user.put("content", content.toString());
-                        firebaseFirestore.collection("Topics").document().set(
-                                new Topics(title,content,uri.toString())
-                        );
-                    }
-                });
-
-                Toast.makeText(Doctor_addTopics.this, "uploaded", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(Doctor_addTopics.this, HomeDoctor.class));
 
             }

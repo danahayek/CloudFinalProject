@@ -18,6 +18,7 @@ import com.example.cloudfinalproject.Doctor.Doctor_Update;
 import com.example.cloudfinalproject.Doctor.Doctor_addTopics;
 import com.example.cloudfinalproject.Doctor.Signup_Doctor;
 import com.example.cloudfinalproject.R;
+import com.example.cloudfinalproject.module.DoctorTopicModule;
 import com.example.cloudfinalproject.module.showDoctor;
 
 import java.util.ArrayList;
@@ -25,15 +26,14 @@ import java.util.ArrayList;
 public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHolder> {
 
     Context context;
-    ArrayList<showDoctor> topicArrayList;
+    ArrayList<DoctorTopicModule> topicArrayList;
 
     private ItemClickListener mClickListener;
 
-    public Doctor_Adapter(Context context, ArrayList<showDoctor> topicArrayList, ItemClickListener onClick ) {
+    public Doctor_Adapter(Context context, ArrayList<DoctorTopicModule> topicArrayList) {
         this.context = context;
 
         this.topicArrayList = topicArrayList;
-        this.mClickListener = onClick;
 
 
     }
@@ -48,14 +48,14 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        showDoctor n =topicArrayList.get(position);
-        holder.show_name.setText(n.getTitle());
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-              mClickListener.onItemClick(holder.getAdapterPosition(),topicArrayList.get(position).getId());
-            }
-        });
+        DoctorTopicModule n =topicArrayList.get(position);
+        holder.show_name.setText(n.getTopic_address());
+//        holder.delete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//              mClickListener.onItemClick(holder.getAdapterPosition(),topicArrayList.get(position).getTopic_address());
+//            }
+//        });
       //  holder.show_img.setImageURI(uri);
 
         holder.edit.setOnClickListener(new View.OnClickListener() {
@@ -114,7 +114,7 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
     }
 
 
-    showDoctor getItem(int id) {
+    DoctorTopicModule getItem(int id) {
 
         return topicArrayList.get(id);
     }
