@@ -3,6 +3,7 @@ package com.example.cloudfinalproject.Doctor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,11 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.cloudfinalproject.Adapter.Doctor_Adapter;
 import com.example.cloudfinalproject.ChooseActivity;
 import com.example.cloudfinalproject.R;
+import com.example.cloudfinalproject.module.DoctorModule;
 import com.example.cloudfinalproject.module.DoctorTopicModule;
 import com.example.cloudfinalproject.module.Topics;
 import com.example.cloudfinalproject.module.showDoctor;
@@ -32,7 +35,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class HomeDoctor extends AppCompatActivity   {
+public class HomeDoctor extends AppCompatActivity   implements Doctor_Adapter.ItemClickListener,Doctor_Adapter.EditClickListener{
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -40,6 +43,9 @@ public class HomeDoctor extends AppCompatActivity   {
     Doctor_Adapter adapterDoc;
     LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     ArrayList<DoctorTopicModule> topic_items;
+
+    EditText addresss,detailss;
+    Button imagess,videos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +55,40 @@ public class HomeDoctor extends AppCompatActivity   {
 
         recyclerDoc = findViewById(R.id.recycler_doc);
         topic_items = new ArrayList<DoctorTopicModule>();
-        adapterDoc = new Doctor_Adapter(this,topic_items);
+        adapterDoc = new Doctor_Adapter(this,topic_items,this,this);
         recyclerDoc.setAdapter(adapterDoc);
 
+
+        addresss=findViewById(R.id.edittopic_address);
+        detailss=findViewById(R.id.edittopic_details);
+        imagess=findViewById(R.id.editchoose_image);
+        videos=findViewById(R.id.editchoose_video);
+
+
+//
+//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+//            @Override
+//            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+//                return 0;
+//            }
+//
+//            @Override
+//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+//
+//                adapterDoc.deleteItem(viewHolder.getAdapterPosition());
+//            }
+//        }).attachToRecyclerView(recyclerDoc);
+
         // String nn = getIntent().getStringExtra("name");
-        GetNote();
+        GetDoctor();
     }
 
-    private void GetNote() {
+    private void GetDoctor() {
 
         db.collection("DoctorTopic").get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -76,7 +108,7 @@ public class HomeDoctor extends AppCompatActivity   {
 
 
 
-                                    DoctorTopicModule c = new DoctorTopicModule(title);
+                                    DoctorTopicModule c = new DoctorTopicModule(title,id);
                                     topic_items.add(c);
 
                                     recyclerDoc.setLayoutManager(layoutManager);
@@ -100,6 +132,59 @@ public class HomeDoctor extends AppCompatActivity   {
 
                     }
                 });
+    }
+    public void Delete(final DoctorTopicModule showdoctor) {
+
+        db.collection("DoctorTopic").document(showdoctor.getId())
+                .delete()
+
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                    @Override
+                    public void onSuccess(Void unused) {
+                        topic_items.remove(showdoctor);
+                        adapterDoc.notifyDataSetChanged();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("logData", "get failed with delete");
+                    }
+                });
+    }
+    ///////////////////////edit///////////
+    public void updateNote(final DoctorTopicModule n) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Update Your Note");
+        final View customLayout = getLayoutInflater().inflate(R.layout.update_doctor, null);
+        builder.setView(customLayout);
+        builder.setPositiveButton(
+                "Update",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        addresss = customLayout.findViewById(R.id.edittopic_address);
+                        detailss = customLayout.findViewById(R.id.edittopic_details);
+                        imagess = customLayout.findViewById(R.id.editchoose_image);
+                        videos = customLayout.findViewById(R.id.editchoose_video);
+
+                        db.collection("DoctorTopic").document(n.getId())
+                                .update("topic_address", addresss.getText().toString() ,detailss.getText().toString(),imagess.getText().toString(),videos.getText().toString())
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("edit", "DocumentSnapshot successfully updated!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("edit", "Error updating document", e);
+                                    }
+                                });
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 //    public void Delete(final Topics showdoctor) {
 //
@@ -169,8 +254,15 @@ public class HomeDoctor extends AppCompatActivity   {
         }
     }
 
-//    @Override
-//    public void onItemClick(int position, String id) {
-//        Delete(topic_items.get(position));
-//    }
+    @Override
+    public void onItemClick(int position, String id) {
+        Delete(topic_items.get(position));
+
+    }
+
+    @Override
+    public void onItemClick2(int position, String id) {
+        updateNote(topic_items.get(position));
+
+    }
 }

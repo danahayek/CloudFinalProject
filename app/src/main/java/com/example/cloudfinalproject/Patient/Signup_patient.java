@@ -1,4 +1,4 @@
-package com.example.cloudfinalproject;
+package com.example.cloudfinalproject.Patient;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +13,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cloudfinalproject.Doctor.HomeDoctor;
 import com.example.cloudfinalproject.Doctor.Signup_Doctor;
+import com.example.cloudfinalproject.R;
 import com.example.cloudfinalproject.module.PationtsModule;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,8 +25,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
-
-import org.checkerframework.common.returnsreceiver.qual.This;
 
 public class Signup_patient extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
@@ -86,6 +86,12 @@ public class Signup_patient extends AppCompatActivity {
         String name = fullname.getText().toString();
         String confrimpassword = confirmpass.getText().toString();
         String phone = phone_number.getText().toString();
+
+
+        if (firebaseAuth.getCurrentUser()!= null){
+            startActivity(new Intent(Signup_patient.this, HomePatient.class));
+
+        }
 
         if (TextUtils.isEmpty(email)){
             emailaddress.setError("Email cannot be empty");

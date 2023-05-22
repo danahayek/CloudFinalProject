@@ -39,6 +39,13 @@ dependencies {
     implementation 'com.karumi:dexter:6.2.1'
     implementation 'com.google.firebase:firebase-iid:21.1.0'
 
+    //upload video
+
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.2'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.2'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.18.2'
+
+
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'

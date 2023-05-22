@@ -1,4 +1,4 @@
-package com.example.cloudfinalproject;
+package com.example.cloudfinalproject.Patient;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,16 +13,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.cloudfinalproject.Doctor.Signup_Doctor;
+import com.example.cloudfinalproject.ChoosePatientTopics;
+import com.example.cloudfinalproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.example.cloudfinalproject.module.PationtsModule;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
+import kotlin.internal.HidesMembers;
 
 
 public class Login_patient extends AppCompatActivity {
@@ -60,7 +59,7 @@ public class Login_patient extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Login_patient.this,ChoosePatientTopics.class));
+                startActivity(new Intent(Login_patient.this, HomePatient.class));
 
             }
         });
@@ -90,7 +89,7 @@ public class Login_patient extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
                         Toast.makeText(Login_patient.this, "User logged in successfully", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(Login_patient.this,ChoosePatientTopics.class));
+                        startActivity(new Intent(Login_patient.this,HomePatient.class));
                     }else{
                         Toast.makeText(Login_patient.this, "Log in Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }

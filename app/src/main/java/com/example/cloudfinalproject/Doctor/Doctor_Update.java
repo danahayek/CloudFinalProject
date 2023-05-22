@@ -25,7 +25,6 @@ public class Doctor_Update extends AppCompatActivity {
     EditText detailss;
     Button edit_img;
     Button edit_video;
-    Button edit_edit;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -39,7 +38,6 @@ public class Doctor_Update extends AppCompatActivity {
         firebaseAuth=FirebaseAuth.getInstance();
         namee=findViewById(R.id.edittopic_address);
         detailss=findViewById(R.id.edittopic_details);
-        edit_edit=findViewById(R.id.editadd_btn);
         edit_img=findViewById(R.id.editchoose_image);
         edit_video=findViewById(R.id.editchoose_video);
 
@@ -50,12 +48,7 @@ public class Doctor_Update extends AppCompatActivity {
         String newImg = edit_img.getText().toString();
         String newVideo = edit_video.getText().toString();
 
-        edit_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                update_topic_doc(newName,newDetails,newImg);
-            }
-        });
+
 
 
 

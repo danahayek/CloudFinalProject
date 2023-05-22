@@ -2,16 +2,32 @@ package com.example.cloudfinalproject.module;
 
 public class DoctorTopicModule {
 
+    String id;
     String topic_img;
     String topic_video;
     String topic_address;
     String topic_details;
 
-    public DoctorTopicModule(String topic_img, String topic_video, String topic_address, String topic_details) {
+    public DoctorTopicModule( String topic_address,String id) {
+        this.topic_address=topic_address;
+        this.id=id;
+    }
+
+    public DoctorTopicModule(String id,String topic_img, String topic_video, String topic_address, String topic_details) {
+
+        this.id=id;
         this.topic_img = topic_img;
         this.topic_video = topic_video;
         this.topic_address = topic_address;
         this.topic_details = topic_details;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public DoctorTopicModule(String topic_address) {

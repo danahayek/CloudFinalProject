@@ -1,5 +1,6 @@
 package com.example.cloudfinalproject.Doctor;
 
+import static android.app.PendingIntent.getActivity;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
@@ -360,6 +361,14 @@ public class Doctor_addTopics extends AppCompatActivity {
 
 
     public void  uploadVideo(){
+
+//
+//         final String dataa;
+//        Uri uri = dataa.getData();
+//        String picturePath = getPath( getActivity( ).getApplicationContext( ), uri);
+//        Log.e("Picture Path", picturePath);
+
+
         storageReference= FirebaseStorage.getInstance().getReference("videos/");
         storageReference.putFile(videouri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -373,18 +382,19 @@ public class Doctor_addTopics extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         String title=address.getText().toString();
                         String content=cotent.getText().toString();
-                        String image=imageUri.toString();
-                        String video=videouri.toString();
+                        String image=imageUri.getPath().toString();
+                        String video=videouri.getPath();
 
 
                         Map<String, Object> user = new HashMap<>();
+//                        user.put("id",g.toString());
                         user.put("address", title.toString());
                         user.put("detail", content.toString());
                         user.put("image",image.toString());
                         user.put("video",video.toString());
 
                         firebaseFirestore.collection("DoctorTopic").document().set(
-                                new DoctorTopicModule(image,video,title,content)
+                                new DoctorTopicModule("id",image,video,title,content)
                         );
                     }
                 });

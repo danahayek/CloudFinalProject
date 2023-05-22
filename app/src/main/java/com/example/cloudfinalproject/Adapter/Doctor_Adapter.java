@@ -1,5 +1,6 @@
 package com.example.cloudfinalproject.Adapter;
 
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,10 @@ import com.example.cloudfinalproject.Doctor.Signup_Doctor;
 import com.example.cloudfinalproject.R;
 import com.example.cloudfinalproject.module.DoctorTopicModule;
 import com.example.cloudfinalproject.module.showDoctor;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -29,14 +34,20 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
     ArrayList<DoctorTopicModule> topicArrayList;
 
     private ItemClickListener mClickListener;
+    private EditClickListener eClickListener;
 
-    public Doctor_Adapter(Context context, ArrayList<DoctorTopicModule> topicArrayList) {
+
+    public Doctor_Adapter(Context context, ArrayList<DoctorTopicModule> topicArrayList, ItemClickListener onClick, EditClickListener onClick2) {
         this.context = context;
-
         this.topicArrayList = topicArrayList;
+        this.mClickListener = onClick;
+        this.eClickListener=onClick2;
+
+
 
 
     }
+
 
 
     @NonNull
@@ -45,29 +56,38 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
         View view = LayoutInflater.from(context).inflate(R.layout.show_doc_item,parent,false);
         return new Doctor_Adapter.ViewHolder(view);
     }
+    //delete
+//    public void deleteItem(int position) {
+//
+//        topicArrayList.remove(position);
+//        notifyItemRemoved(position);
+//
+////         FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        getSnapshots().getSnapshot(position).getReference().delete();
+//
+////        db.collection("DoctorTopic").whereEqualTo("topic_address position")
+////                .delete();
+//    }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         DoctorTopicModule n =topicArrayList.get(position);
         holder.show_name.setText(n.getTopic_address());
-//        holder.delete.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//              mClickListener.onItemClick(holder.getAdapterPosition(),topicArrayList.get(position).getTopic_address());
-//            }
-//        });
-      //  holder.show_img.setImageURI(uri);
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mClickListener.onItemClick(holder.getAdapterPosition(),topicArrayList.get(position).getId());            }
+        });
+       /// holder.show_img.setImageURI(uri);
 
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(context, Doctor_Update.class);
-                context.startActivity(intent);
+                eClickListener.onItemClick2(holder.getAdapterPosition(),topicArrayList.get(position).getTopic_address());
 
-
-                //   EditClickListener.onItemClick(holder.getAdapterPosition(),topicArrayList.get(position).getId());
-
+//                Intent intent = new Intent(context, Doctor_Update.class);
+//                context.startActivity(intent);
 
             }
         });
@@ -104,20 +124,30 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
         }
 
     }
-    public interface ItemClickListener {
-        void onItemClick(int position, String id);
+        public interface ItemClickListener {
+            void onItemClick(int position, String id);
+
+        }
+
+        void setClickListener(ItemClickListener itemClickListener) {
+            this.mClickListener = itemClickListener;
+        }
+
+    public interface EditClickListener {
+        void onItemClick2(int position, String id);
 
     }
 
-    void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
+        void setClickListener(EditClickListener editClickListener) {
+            this.eClickListener = editClickListener;
+        }
 
 
     DoctorTopicModule getItem(int id) {
 
-        return topicArrayList.get(id);
+            return topicArrayList.get(id);
+        }
+
+
+
     }
-
-
-}

@@ -17,6 +17,13 @@
         android:theme="@style/Theme.CloudFinalProject"
         tools:targetApi="31">
         <activity
+            android:name=".Patient.Patient_Show_Details"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".Doctor.Doctor_Update"
             android:exported="false">
             <meta-data
@@ -52,14 +59,14 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".HomePatient"
+            android:name=".Patient.HomePatient"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Login_patient"
+            android:name=".Patient.Login_patient"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -73,7 +80,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Signup_patient"
+            android:name=".Patient.Signup_patient"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
