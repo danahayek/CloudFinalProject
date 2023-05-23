@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,7 +19,9 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.example.cloudfinalproject.Adapter.Doctor_Adapter;
 import com.example.cloudfinalproject.ChooseActivity;
@@ -32,8 +35,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HomeDoctor extends AppCompatActivity   implements Doctor_Adapter.ItemClickListener,Doctor_Adapter.EditClickListener{
 
@@ -47,11 +55,22 @@ public class HomeDoctor extends AppCompatActivity   implements Doctor_Adapter.It
     EditText addresss,detailss;
     Button imagess,videos;
 
+    ImageView imageView;
+    VideoView videoView;
+
+    StorageReference storageReference;
+    Uri imageUri , videoUri;
+    FirebaseFirestore firebaseFirestore;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_doctor);
 
+
+        imageView=findViewById(R.id.editimage_add);
+        videoView=findViewById(R.id.editvideoView);
 
         recyclerDoc = findViewById(R.id.recycler_doc);
         topic_items = new ArrayList<DoctorTopicModule>();
@@ -63,6 +82,9 @@ public class HomeDoctor extends AppCompatActivity   implements Doctor_Adapter.It
         detailss=findViewById(R.id.edittopic_details);
         imagess=findViewById(R.id.editchoose_image);
         videos=findViewById(R.id.editchoose_video);
+
+        firebaseFirestore=FirebaseFirestore.getInstance();
+
 
 
 //
@@ -105,7 +127,6 @@ public class HomeDoctor extends AppCompatActivity   implements Doctor_Adapter.It
                                     String content = documentSnapshot.getString("topic_details");
                                     String image = documentSnapshot.getString("image");
                                     String video = documentSnapshot.getString("video");
-
 
 
                                     DoctorTopicModule c = new DoctorTopicModule(title,id);
@@ -153,22 +174,28 @@ public class HomeDoctor extends AppCompatActivity   implements Doctor_Adapter.It
                 });
     }
     ///////////////////////edit///////////
+
+
     public void updateNote(final DoctorTopicModule n) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Update Your Note");
+        builder.setTitle("تعديل");
         final View customLayout = getLayoutInflater().inflate(R.layout.update_doctor, null);
         builder.setView(customLayout);
         builder.setPositiveButton(
-                "Update",
+                "تعديل",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         addresss = customLayout.findViewById(R.id.edittopic_address);
                         detailss = customLayout.findViewById(R.id.edittopic_details);
-                        imagess = customLayout.findViewById(R.id.editchoose_image);
-                        videos = customLayout.findViewById(R.id.editchoose_video);
+                        imageView = customLayout.findViewById(R.id.editimage_add);
+                        videoView = customLayout.findViewById(R.id.editvideoView);
 
                         db.collection("DoctorTopic").document(n.getId())
-                                .update("topic_address", addresss.getText().toString() ,detailss.getText().toString(),imagess.getText().toString(),videos.getText().toString())
+                                .update("topic_address", addresss.getText().toString() ,
+                                        "topic_details",detailss.getText().toString(),
+                                        "topic_img",uploadimage(imageView.setImageURI(imageUri)),
+                                        "topic_video",videos.getText().toString())
+
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -185,6 +212,26 @@ public class HomeDoctor extends AppCompatActivity   implements Doctor_Adapter.It
                 });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+
+    public void uploadimage(Uri uri) {
+        storageReference = FirebaseStorage.getInstance().getReference("images/");
+        storageReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(HomeDoctor.this, "تمت الاضافة بنجاح", Toast.LENGTH_SHORT).show();
+
+                startActivity(new Intent(HomeDoctor.this, HomeDoctor.class));
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(HomeDoctor.this, "failed", Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 //    public void Delete(final Topics showdoctor) {
 //

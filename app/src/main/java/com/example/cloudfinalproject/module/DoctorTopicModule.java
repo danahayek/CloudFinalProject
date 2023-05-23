@@ -2,7 +2,7 @@ package com.example.cloudfinalproject.module;
 
 public class DoctorTopicModule {
 
-    String id;
+    public String id;
     String topic_img;
     String topic_video;
     String topic_address;

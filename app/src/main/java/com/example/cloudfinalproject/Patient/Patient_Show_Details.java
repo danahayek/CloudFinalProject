@@ -81,7 +81,7 @@ public class Patient_Show_Details extends AppCompatActivity {
     }
     ///////////////////////get doctor info
 
-    private void GetPatient() {
+    private void GetPatient(String title) {
 
 //        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("DoctorTopic");
 //        StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("https://firebasestorage.googleapis.com/v0/b/cloudtrack-f24ba.appspot.com/o/images%2Fdownload.jpg?alt=media&token=4bece33d-4f5e-4ae1-8fbd-2b1c4269e955");
@@ -118,7 +118,7 @@ public class Patient_Show_Details extends AppCompatActivity {
 //        });
 
 
-        db.collection("DoctorTopic").get()
+        db.collection("DoctorTopic").whereEqualTo("topic_address" , title).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot documentSnapshots) {

@@ -1,12 +1,18 @@
 package com.example.cloudfinalproject.Patient;
 
+import static com.google.firebase.database.FirebaseDatabase.*;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.cloudfinalproject.Adapter.Doctor_Adapter;
 import com.example.cloudfinalproject.Adapter.Patient_Adapter;
@@ -15,8 +21,10 @@ import com.example.cloudfinalproject.module.DoctorTopicModule;
 import com.example.cloudfinalproject.module.PatientTopicModule;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;

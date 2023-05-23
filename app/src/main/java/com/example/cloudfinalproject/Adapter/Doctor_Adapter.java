@@ -76,7 +76,7 @@ public class Doctor_Adapter extends RecyclerView.Adapter<Doctor_Adapter.ViewHold
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mClickListener.onItemClick(holder.getAdapterPosition(),topicArrayList.get(position).getId());            }
+                mClickListener.onItemClick(holder.getAdapterPosition(),topicArrayList.get(position).id);            }
         });
        /// holder.show_img.setImageURI(uri);
 

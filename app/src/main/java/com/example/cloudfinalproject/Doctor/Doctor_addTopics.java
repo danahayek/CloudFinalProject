@@ -360,13 +360,13 @@ public class Doctor_addTopics extends AppCompatActivity {
 
 
 
-    public void  uploadVideo(){
 
 //
 //         final String dataa;
 //        Uri uri = dataa.getData();
 //        String picturePath = getPath( getActivity( ).getApplicationContext( ), uri);
 //        Log.e("Picture Path", picturePath);
+    public void  uploadVideo(){
 
 
         storageReference= FirebaseStorage.getInstance().getReference("videos/");
